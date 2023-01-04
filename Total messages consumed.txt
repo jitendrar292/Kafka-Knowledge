@@ -1,0 +1,19 @@
+In Kafka, the total number of messages consumed by a consumer can be obtained using the position() method of the KafkaConsumer class. This method returns the current position (i.e., offset) of the consumer in the partition.
+
+For example, to get the total number of messages consumed from a specific partition, you can do the following:
+
+Copy code
+TopicPartition partition = new TopicPartition("my-topic", 0);
+consumer.assign(Collections.singletonList(partition));
+long position = consumer.position(partition);
+The position() method returns the offset of the next message that will be returned by a call to poll(). In other words, it returns the number of messages that have been consumed so far, plus one. To get the total number of messages consumed, you can subtract one from the returned value.
+
+Keep in mind that the position() method only returns the position for a single partition. If you want to get the total number of messages consumed across all partitions, you will need to get the position for each partition and add them together.
+
+Copy code
+long totalConsumed = 0;
+List<TopicPartition> partitions = consumer.assignment();
+for (TopicPartition partition : partitions) {
+    totalConsumed += consumer.position(partition);
+}
+This will give you the total number of messages consumed by the consumer across all partitions.
